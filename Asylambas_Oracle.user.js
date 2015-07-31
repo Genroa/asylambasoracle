@@ -4,8 +4,9 @@
 // @description Userscript dédié à l'amélioration de l'UI d'Asylamba
 // @include     http://game.asylamba.com/*
 // @version     1
-// @grant       Genroa
+// @grant       none
 // @author      Genroa
+// @updateURL		https://github.com/Genroa/asylambasoracle/raw/master/Asylambas_Oracle.user.js
 // ==/UserScript==
 
 //################# UTILITIES ################
