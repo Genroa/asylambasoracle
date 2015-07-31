@@ -1,0 +1,2 @@
+# asylambasoracle
+Userscript for Aslamba!
