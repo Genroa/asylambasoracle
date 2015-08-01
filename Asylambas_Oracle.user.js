@@ -4,9 +4,8 @@
 // @description Userscript dédié à l'amélioration de l'UI d'Asylamba
 // @include     http://game.asylamba.com/*
 // @version     1
-// @grant       none
-// @author      Genroa
-// @updateURL		https://github.com/Genroa/asylambasoracle/raw/master/Asylambas_Oracle.user.js
+// @grant       Genroa & Alceste
+// @author      Genroa & Alceste
 // ==/UserScript==
 
 //################# UTILITIES ################
@@ -239,6 +238,97 @@ function loadOraclesMap(){
 //############################################
 
 
+//################## LOADER ##################
+var currentRessources = 0; // ressources currently in warehouse
+var production        = 0; // current ressources production
+
+// zero padding function
+function pad(n, width, z) 
+{
+    z = z || '0';
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+}
+
+// Format time based on remaining tick
+function beautifulTime(remainingTick, d) 
+{
+    return ((remainingTick-1) > 0 ? (remainingTick-1) + 'h' : '') 
+        + pad((d.getMinutes() === 0 ? 0 : 60 - d.getMinutes()), 2) 
+        + 'm'
+    ;
+}
+
+// Display the remaining time before the warehouse is full
+function remainingWarehouseTime() 
+{
+    currentRessources  = parseInt($("#tools-refinery > div.overflow > div.number-box.grey span.value").text().replace(/ /g, ""));
+    var fillingPercent = parseInt($("#tools-refinery > div.overflow > div.number-box.grey span.progress-bar > span").css('width')) / 100;
+
+    if (fillingPercent < 1) {
+        var remainingTick = Math.ceil((currentRessources / fillingPercent - currentRessources) / production);
+        var remainingTime = beautifulTime(remainingTick, new Date());
+
+        $("#tools-refinery > div.overflow > div.number-box.grey span.value").append('<span style="font-size: 13px;font-weight: normal;"> ' + remainingTick + 'r (' + remainingTime + ')</span>');
+    }
+}
+
+function remainingGeneratorTime() 
+{
+    var missingRessourceRegex = /il manque ([0-9 ]+) ressource/i;
+    var d                     = new Date();
+    var match;
+
+    $('div.build-item > span.button.disable.hb.lt').each(function() 
+    {
+        if ((match = missingRessourceRegex.exec($(this).attr('title'))) !== null) {
+            match = parseInt(match[1].replace(/ /g, ""));
+
+            var remainingTick = Math.ceil(match / production);
+            var remainingTime = beautifulTime(remainingTick, d);
+
+            $(this).attr('title', $(this).attr('title') + ', ' + remainingTick + ' releves restantes (' + remainingTime + ')');
+        }
+    });
+}
+
+function remainingTechnosphereTime() 
+{
+    var d = new Date();
+
+    $('div.build-item:not(.disable) > span.button.disable').each(function() 
+    {
+        if ($(this).text().indexOf('pas assez de ressources') > -1) {
+            var remainingTick = Math.ceil((parseInt($(this).children('span.final-cost:eq(0)').text().replace(/ /g, ''))-currentRessources)/production);
+            var remainingTime = beautifulTime(remainingTick, d);
+
+            $(this).children('br').before(', ' + remainingTick + 'r (' + remainingTime + ')');
+        }
+    });
+}
+
+function loadRemainingTimes()
+{
+    production = $("#tools-refinery > div.overflow > div.number-box:first-child span.value").text().replace(/ /g, "").split("+");
+    production = parseInt(production[0]) + parseInt(production[1]);
+
+    // Display the remaining time before the warehouse is full
+    remainingWarehouseTime();
+    
+    // Display the remaining time before being able to build every building
+    if (location.href.indexOf('bases/view-generator') > -1) {
+        remainingGeneratorTime();
+    }
+    
+    // Display the remaining time before being able to research a technology
+    if (location.href.indexOf('bases/view-technosphere') > -1) {
+        remainingTechnosphereTime()
+    }
+}
+
+
+
+//############################################
 
 
 //################## LOADER ##################
@@ -250,7 +340,7 @@ $(function(){
 		loadOraclesMap();	
 	}
 
-
+	loadRemainingTimes();
 });
 
 
