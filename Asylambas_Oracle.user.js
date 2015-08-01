@@ -3,7 +3,7 @@
 // @namespace   asylamba
 // @description Userscript dédié à l'amélioration de l'UI d'Asylamba
 // @include     http://game.asylamba.com/*
-// @version     1
+// @version     1.1
 // @grant       Genroa & Alceste
 // @author      Genroa & Alceste
 // ==/UserScript==
