@@ -5,6 +5,7 @@ Cet Userscript est un couteau suisse-hallebarde multifonction pour Asylamba. Il 
 
 ## Modules
 - OraclesMap
+- remainingTimes
 
 ## Information sur les cookies
 Cet userscript fait usage de cookies. Si vous n'en voulez pas, n'utilisez pas ce script. :3
@@ -19,3 +20,8 @@ Ce module améliore la carte du système. Il ajoute plusieurs filtres en haut à
 - afficher/cacher la ceinture commerciale *(à faire)*
 - afficher/cacher les icones *(fait)*
 - réglage des distances *(à faire)*
+
+
+## remainingTimes
+
+Ce module ajoute le temps et nombre de relèves à attendre avant de pouvoir lancer la construction d'un batiment (visible lorsqu'on survole un élément dans le générateur)
