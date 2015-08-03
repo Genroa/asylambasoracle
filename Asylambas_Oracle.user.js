@@ -352,7 +352,7 @@ function addQuickMenus()
 function addMoneyMenu(basePath)
 {
 	var moneyMenu = '<span id="moneyMenu" style="position: relative; width: 0; height: 0; display: none">'
-				   +'<li style="position: absolute; left: -50px; top: 40px"><a href="'+basePath+'financial/view-send">Envoi de crédit</a></li>'
+				   +'<li style="position: absolute; left: -50px; top: 50px; list-style: none;"><a href="'+basePath+'financial/view-send">Envoi de crédit</a></li>'
 				   +'</span>';
 
 	$('.square[title=finances] > img').first().after(moneyMenu);
@@ -361,7 +361,7 @@ function addMoneyMenu(basePath)
 		clearTimeout($(this).data('timeoutId'));
 		$('#moneyMenu').fadeIn();
 	});
-	$('#moneyMenu').mouseleave(function(){
+	$('#moneyMenu, .square[title=finances]').mouseleave(function(){
 		var elem = $('#moneyMenu');
 
 		timeoutId = setTimeout(function(){
@@ -376,11 +376,11 @@ function addMoneyMenu(basePath)
 
 function addLeagueMenu(basePath)
 {
-	var leagueMenu = '<span id="leagueMenu" style="position: relative; width: 0; height: 0; display: none">'
-				   +'<li style="position: absolute; left: -50px; top: 40px"><a href="'+basePath+'faction/view-election">Election</a></li>'
-				   +'<li style="position: absolute; left: -50px; top: 80px"><a href="'+basePath+'faction/view-forum">Forum</a></li>'
-				   +'<li style="position: absolute; left: -50px; top: 120px"><a href="'+basePath+'faction/view-data">Registres</a></li>'
-				   +'<li style="position: absolute; left: -50px; top: 160px"><a href="'+basePath+'/faction/view-player">Membres</a></li>'
+	var leagueMenu ='<span id="leagueMenu" style="position: relative; width: 0; height: 0; display: none">'
+				   +'<li style="position: absolute; left: -50px; top: 50px; list-style: none;"><a href="'+basePath+'faction/view-election">Election</a></li>'
+				   +'<li style="position: absolute; left: -50px; top: 90px; list-style: none;"><a href="'+basePath+'faction/view-forum">Forum</a></li>'
+				   +'<li style="position: absolute; left: -50px; top: 130px; list-style: none;"><a href="'+basePath+'faction/view-data">Registres</a></li>'
+				   +'<li style="position: absolute; left: -50px; top: 170px; list-style: none;"><a href="'+basePath+'/faction/view-player">Membres</a></li>'
 				   +'</span>';
 
 	$('.square[title=faction] > img').first().after(leagueMenu);
@@ -389,7 +389,7 @@ function addLeagueMenu(basePath)
 		clearTimeout($(this).data('timeoutId'));
 		$('#leagueMenu').fadeIn();
 	});
-	$('#leagueMenu').mouseleave(function(){
+	$('#leagueMenu, .square[title=faction]').mouseleave(function(){
 		var elem = $('#leagueMenu');
 
 		timeoutId = setTimeout(function(){
@@ -398,16 +398,18 @@ function addLeagueMenu(basePath)
         $('.square[title=faction]').data('timeoutId', timeoutId);
 	});
 
+
+
 	$('.square[title=faction]').removeClass("hb");
 }
 
 function addAdmiralyMenu(basePath)
 {
 	var admiraltyMenu = '<span id="admiraltyMenu" style="position: relative; width: 0; height: 0; display: none">'
-					   +'<li style="position: absolute; left: -50px; top: 40px"><a href="'+basePath+'fleet/view-overview">Amirauté</a></li>'
-					   +'<li style="position: absolute; left: -50px; top: 80px"><a href="'+basePath+'fleet/view-spyreport">Rapports</a></li>'
-					   +'<li style="position: absolute; left: -50px; top: 120px"><a href="'+basePath+'fleet/view-archive">Archives</a></li>'
-					   +'<li style="position: absolute; left: -50px; top: 160px"><a href="'+basePath+'fleet/view-memorial">Mémorial</a></li>'
+					   +'<li style="position: absolute; left: -50px; top: 50px; list-style: none;"><a href="'+basePath+'fleet/view-overview">Amirauté</a></li>'
+					   +'<li style="position: absolute; left: -50px; top: 90px; list-style: none;"><a href="'+basePath+'fleet/view-spyreport">Rapports</a></li>'
+					   +'<li style="position: absolute; left: -50px; top: 130px; list-style: none;"><a href="'+basePath+'fleet/view-archive">Archives</a></li>'
+					   +'<li style="position: absolute; left: -50px; top: 170px; list-style: none;"><a href="'+basePath+'fleet/view-memorial">Mémorial</a></li>'
 					   +'</span>';
 
 	$('.square[title=amirauté] > img').first().after(admiraltyMenu);
@@ -416,7 +418,7 @@ function addAdmiralyMenu(basePath)
 		clearTimeout($(this).data('timeoutId'));
 		$('#admiraltyMenu').fadeIn();
 	});
-	$('#admiraltyMenu').mouseleave(function(){
+	$('#admiraltyMenu, .square[title=amirauté]').mouseleave(function(){
 		var elem = $('#admiraltyMenu');
 
 		timeoutId = setTimeout(function(){
