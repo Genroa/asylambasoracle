@@ -344,9 +344,35 @@ function addQuickMenus()
 	var pos = getPosition(basePath, '/', 4) ;
 	basePath = basePath.substring(0, pos+1);
 
+	addMoneyMenu(basePath);
 	addLeagueMenu(basePath);
 	addAdmiralyMenu(basePath);
 }
+
+function addMoneyMenu(basePath)
+{
+	var moneyMenu = '<span id="moneyMenu" style="position: relative; width: 0; height: 0; display: none">'
+				   +'<li style="position: absolute; left: -50px; top: 40px"><a href="'+basePath+'financial/view-send">Envoi de crédit</a></li>'
+				   +'</span>';
+
+	$('.square[title=finances] > img').first().after(moneyMenu);
+	
+	$('.square[title=finances]').mouseenter(function(){
+		clearTimeout($(this).data('timeoutId'));
+		$('#moneyMenu').fadeIn();
+	});
+	$('#moneyMenu').mouseleave(function(){
+		var elem = $('#moneyMenu');
+
+		timeoutId = setTimeout(function(){
+            elem.fadeOut();
+        }, 800);
+        $('.square[title=finances]').data('timeoutId', timeoutId);
+	});
+
+	$('.square[title=finances]').removeClass("hb");
+}
+
 
 function addLeagueMenu(basePath)
 {
