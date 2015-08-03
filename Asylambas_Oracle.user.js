@@ -352,7 +352,7 @@ function addQuickMenus()
 function addMoneyMenu(basePath)
 {
 	var moneyMenu = '<span id="moneyMenu" style="position: relative; width: 0; height: 0; display: none">'
-				   +'<li style="position: absolute; left: -50px; top: 50px; list-style: none;"><a href="'+basePath+'financial/view-send">Envoi de crédit</a></li>'
+				   +'<li style="position: absolute; left: -50px; top: 50px; list-style: none;"><a href="'+basePath+'financial/view-send">Envoi de crédits</a></li>'
 				   +'</span>';
 
 	$('.square[title=finances] > img').first().after(moneyMenu);
@@ -406,9 +406,9 @@ function addLeagueMenu(basePath)
 function addAdmiralyMenu(basePath)
 {
 	var admiraltyMenu = '<span id="admiraltyMenu" style="position: relative; width: 0; height: 0; display: none">'
-					   +'<li style="position: absolute; left: -50px; top: 50px; list-style: none;"><a href="'+basePath+'fleet/view-overview">Amirauté</a></li>'
-					   +'<li style="position: absolute; left: -50px; top: 90px; list-style: none;"><a href="'+basePath+'fleet/view-spyreport">Rapports</a></li>'
-					   +'<li style="position: absolute; left: -50px; top: 130px; list-style: none;"><a href="'+basePath+'fleet/view-archive">Archives</a></li>'
+					   +'<li style="position: absolute; left: -50px; top: 50px; list-style: none;"><a href="'+basePath+'fleet/view-overview">Aperçu des armées</a></li>'
+					   +'<li style="position: absolute; left: -50px; top: 90px; list-style: none;"><a href="'+basePath+'fleet/view-spyreport">Rapports d\'espionnage</a></li>'
+					   +'<li style="position: absolute; left: -50px; top: 130px; list-style: none;"><a href="'+basePath+'fleet/view-archive">Archives militaires</a></li>'
 					   +'<li style="position: absolute; left: -50px; top: 170px; list-style: none;"><a href="'+basePath+'fleet/view-memorial">Mémorial</a></li>'
 					   +'</span>';
 
