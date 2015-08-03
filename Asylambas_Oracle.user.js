@@ -408,7 +408,9 @@ function addAdmiralyMenu(basePath)
 //################## LOADER ##################
 var path = window.location.pathname;
 $(function(){
-
+	
+	//quick menus
+	addQuickMenus();
 
 	//Oracle's Map
 	if(path.slice(1).substring(path.slice(1).indexOf('/'), path.length) == "/map"){
@@ -416,10 +418,7 @@ $(function(){
 	}
 
 	//remainingTime
-	loadRemainingTimes();
-
-	//quick menus
-	addQuickMenus();
+	loadRemainingTimes();	
 });
 
 
