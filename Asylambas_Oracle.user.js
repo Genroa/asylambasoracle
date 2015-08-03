@@ -35,6 +35,10 @@ function eraseCookie(name) {
 	createCookie(name,"",-1);
 }
 
+function getPosition(str, m, i) {
+   return str.split(m, i).join(m).length;
+}
+
 /*
 Factions:
 Rebelle/vide: 		0 
@@ -238,7 +242,7 @@ function loadOraclesMap(){
 //############################################
 
 
-//################## LOADER ##################
+//########### REMAINING TIME #################
 var currentRessources = 0; // ressources currently in warehouse
 var production        = 0; // current ressources production
 
@@ -331,16 +335,91 @@ function loadRemainingTimes()
 //############################################
 
 
+//############## QUICK MENUS #################
+
+function addQuickMenus()
+{
+	var basePath = window.location.href;
+	var pos = getPosition(basePath, '/', 4) ;
+	basePath = basePath.substring(0, pos+1);
+
+	addLeagueMenu(basePath);
+	addAdmiralyMenu(basePath);
+}
+
+function addLeagueMenu(basePath)
+{
+	var leagueMenu = '<span id="leagueMenu" style="position: relative; width: 0; height: 0; display: none">'
+				   +'<li style="position: absolute; left: -50px; top: 40px"><a href="'+basePath+'faction/view-election">Election</a></li>'
+				   +'<li style="position: absolute; left: -50px; top: 80px"><a href="'+basePath+'faction/view-forum">Forum</a></li>'
+				   +'<li style="position: absolute; left: -50px; top: 120px"><a href="'+basePath+'faction/view-data">Registres</a></li>'
+				   +'<li style="position: absolute; left: -50px; top: 160px"><a href="'+basePath+'/faction/view-player">Membres</a></li>'
+				   +'</span>';
+
+	$('.square[title=faction] > img').first().after(leagueMenu);
+	
+	$('.square[title=faction]').mouseenter(function(){
+		clearTimeout($(this).data('timeoutId'));
+		$('#leagueMenu').fadeIn();
+	});
+	$('#leagueMenu').mouseleave(function(){
+		var elem = $('#leagueMenu');
+
+		timeoutId = setTimeout(function(){
+            elem.fadeOut();
+        }, 800);
+        $('.square[title=faction]').data('timeoutId', timeoutId);
+	});
+
+	$('.square[title=faction]').removeClass("hb");
+}
+
+function addAdmiralyMenu(basePath)
+{
+	var admiraltyMenu = '<span id="admiraltyMenu" style="position: relative; width: 0; height: 0; display: none">'
+					   +'<li style="position: absolute; left: -50px; top: 40px"><a href="'+basePath+'fleet/view-overview">Amirauté</a></li>'
+					   +'<li style="position: absolute; left: -50px; top: 80px"><a href="'+basePath+'fleet/view-spyreport">Rapports</a></li>'
+					   +'<li style="position: absolute; left: -50px; top: 120px"><a href="'+basePath+'fleet/view-archive">Archives</a></li>'
+					   +'<li style="position: absolute; left: -50px; top: 160px"><a href="'+basePath+'fleet/view-memorial">Mémorial</a></li>'
+					   +'</span>';
+
+	$('.square[title=amirauté] > img').first().after(admiraltyMenu);
+	
+	$('.square[title=amirauté]').mouseenter(function(){
+		clearTimeout($(this).data('timeoutId'));
+		$('#admiraltyMenu').fadeIn();
+	});
+	$('#admiraltyMenu').mouseleave(function(){
+		var elem = $('#admiraltyMenu');
+
+		timeoutId = setTimeout(function(){
+            elem.fadeOut();
+        }, 800);
+        $('.square[title=amirauté]').data('timeoutId', timeoutId);
+	});
+
+	$('.square[title=amirauté]').removeClass("hb");
+}
+
+
+//############################################
+
+
 //################## LOADER ##################
 var path = window.location.pathname;
 $(function(){
 
 
+	//Oracle's Map
 	if(path.slice(1).substring(path.slice(1).indexOf('/'), path.length) == "/map"){
 		loadOraclesMap();	
 	}
 
+	//remainingTime
 	loadRemainingTimes();
+
+	//quick menus
+	addQuickMenus();
 });
 
 
