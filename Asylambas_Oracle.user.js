@@ -4,7 +4,7 @@
 // @description Userscript dédié à l'amélioration de l'UI d'Asylamba
 // @include     http://game.asylamba.com/*
 // @updateURL    https://github.com/Genroa/asylambasoracle/raw/master/Asylambas_Oracle.user.js
-// @version     1.2.1
+// @version     1.3
 // @grant       Genroa & Alceste
 // @author      Genroa & Alceste
 // ==/UserScript==
@@ -39,6 +39,19 @@ function eraseCookie(name) {
 function getPosition(str, m, i) {
    return str.split(m, i).join(m).length;
 }
+
+
+$.fn.extend({
+    disable: function(state) {
+        return this.each(function() {
+            var $this = $(this);
+            if($this.is('input, button'))
+              this.disabled = state;
+            else
+              $this.toggleClass('disabled', state);
+        });
+    }
+});
 
 /*
 Factions:
@@ -434,20 +447,161 @@ function addAdmiralyMenu(basePath)
 //############################################
 
 
+//################ AOConfig ##################
+
+function AOConfig()
+{
+	this.config = {};
+}
+AOConfig.prototype.getValue = function(key)
+{
+	return this.config[key];
+}
+AOConfig.prototype.setValue = function(key, val)
+{
+	if(typeof val === "function"){}
+	else
+	{
+		this.config[key] = val;
+		this.saveConfig();
+	}
+}
+AOConfig.prototype.loadConfig = function()
+{
+	var strData = readCookie("AOconfig");
+	
+	if(strData){
+		var jsonData = eval("(" + strData + ")");
+
+		this.config = jsonData;
+	}
+}
+AOConfig.prototype.saveConfig = function()
+{
+	var saveData = {};
+	for(variable in this.config)
+	{
+		if(typeof variable === "function"){}
+		else
+		{
+			saveData[variable] = this.config[variable];
+		}
+	}
+	createCookie("AOconfig", JSON.stringify(saveData), 365);
+}
+
+var aoConfig = new AOConfig();
+
+//############################################
+
+
+
+
+function addConfigPanel()
+{
+	var config = '<div class="component hasMover">'
+					+'<div class="head skin-5">'
+						+'<h2>'
+							+'Paramètres de Asylamba\'s Oracle'
+						+'</h2>'
+					+'</div>'
+					+'<div class="fix-body">'
+						+'<div class="body" style="top: 0px;">';
+							config+='<a href="#" class="on-off-button AO-config '+(aoConfig.getValue("useOraclesMap") ? "" : "disabled")+'" config-attribute="useOraclesMap">Utiliser Oracle\'s Map</a>';
+							config+='<a href="#" class="on-off-button AO-config '+(aoConfig.getValue("useRemainingTimes") ? "" : "disabled")+'" config-attribute="useRemainingTimes">Utiliser RemainingTimes</a>';
+							config+='<a href="#" class="on-off-button AO-config '+(aoConfig.getValue("useQuickMenus") ? "" : "disabled")+'" config-attribute="useQuickMenus">Utiliser QuickMenus</a>';
+							
+							
+							
+
+						config+=('</div>'
+								+'<a href="#" class="toTop" style="display: none;"></a>'
+								+'<a href="#" class="toBottom" style="display: none;"></a>'
+							+'</div>'
+						+'</div>');
+
+	
+	$('#content > div:nth-child(2)').after(config);
+
+	$('.AO-config').on('click', function(){
+		var confName = $(this).attr('config-attribute');
+		
+		if(aoConfig.getValue(confName))
+		{
+			$(this).addClass("disabled");
+			aoConfig.setValue(confName, false);
+		}
+		else
+		{
+			$(this).removeClass("disabled");
+			aoConfig.setValue(confName, true);
+		}
+	});
+}
+
 //################## LOADER ##################
 var path = window.location.pathname;
 $(function(){
 	
+	//load AO config
+	aoConfig.loadConfig();
+
 	//quick menus
-	addQuickMenus();
+	var use = aoConfig.getValue("useQuickMenus");
+	if(use != undefined)
+	{
+		if(use)
+		{
+			addQuickMenus();
+		}
+	}
+	else
+	{
+		aoConfig.setValue("useQuickMenus", true);
+		addQuickMenus();
+	}
+	
 
 	//Oracle's Map
-	if(path.slice(1).substring(path.slice(1).indexOf('/'), path.length) == "/map"){
-		loadOraclesMap();	
+
+	if(path.slice(1).substring(path.slice(1).indexOf('/'), path.length) == "/map")
+	{
+		use = aoConfig.getValue("useOraclesMap");
+		if(use != undefined)
+		{
+			if(use)
+			{
+				loadOraclesMap();
+			}
+		}
+		else
+		{
+			aoConfig.setValue("useOraclesMap", true);
+			loadOraclesMap();
+		}
 	}
 
 	//remainingTime
-	loadRemainingTimes();
+	use = aoConfig.getValue("useRemainingTimes");
+	if(use != undefined)
+	{
+		if(use)
+		{
+			loadRemainingTimes();
+		}
+	}
+	else
+	{
+		aoConfig.setValue("useRemainingTimes", true);
+		loadRemainingTimes();
+	}
+
+	//configPanel
+	if(path.slice(1).substring(path.slice(1).indexOf('/'), path.length) == "/params")
+	{
+		addConfigPanel();
+	}
+	
 });
 
 
