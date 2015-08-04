@@ -510,7 +510,8 @@ function addConfigPanel()
 							config+='<a href="#" class="on-off-button AO-config '+(aoConfig.getValue("useOraclesMap") ? "" : "disabled")+'" config-attribute="useOraclesMap">Utiliser Oracle\'s Map</a>';
 							config+='<a href="#" class="on-off-button AO-config '+(aoConfig.getValue("useRemainingTimes") ? "" : "disabled")+'" config-attribute="useRemainingTimes">Utiliser RemainingTimes</a>';
 							config+='<a href="#" class="on-off-button AO-config '+(aoConfig.getValue("useQuickMenus") ? "" : "disabled")+'" config-attribute="useQuickMenus">Utiliser QuickMenus</a>';
-							
+							config+='<a href="#" class="on-off-button AO-config '+(aoConfig.getValue("useHorizontalScroll") ? "" : "disabled")+'" config-attribute="useHorizontalScroll">Activer le scrolling horizontal</a>';
+
 							
 							
 
@@ -538,6 +539,106 @@ function addConfigPanel()
 		}
 	});
 }
+//############################################
+
+
+//########## HORIZONTAL SCROLL ###############
+
+function loadHorizontalScroll()
+{
+	$(window).bind("mousewheel");
+  
+    // On sauvegarde la position de la souris pour l'avoir dans l'event mousewheel.
+     // Cette event permet de savoir si la souris à bouger
+     $('body').mousemove(function (event) {
+         var __sensibilityPX = 10; // Sensibilité de 10px pour les déplacements involontaire lors du scroll
+         $(this).data("__mousepos", {x: event.clientX, y: event.clientY});
+         
+        var pos =  $(this).data("__wheelstartpos");
+         pos = (pos) ? pos : {x: __sensibilityPX * -1, y: __sensibilityPX * -1};
+         
+        //  Math.abs: Retourne un entier (pour avoir la différence absolue)
+         if (Math.abs(pos.x-event.clientX) + Math.abs(pos.y-event.clientY) > __sensibilityPX) {
+             $(this).data("__lastiswheel", false).data("__wheelstartpos", false);
+         }
+     });
+  
+    $('body').bind("DOMMouseScroll mousewheel", function(event) {
+         //$(this).data("__lastiswheel", false); Désactivation de la fonctionnalité "lastiswheel"
+         event = event.originalEvent;
+         var delta = 0,
+             direction = "",
+             $mover, $c1, $c2,
+             rule2 = false,
+             //On detecte si la souris est sur un element scrollable
+             stop = !!(!$(this).data("__lastiswheel") && ($mover = $(event.target).parents(".hasMover"))[0] &&
+                       ($c1 = $mover.children(".fix-body")).height() < ($c2 = $c1.children(".body")).height()),
+             //On detecte si l'utilisateur essaye de scroller horizontalement
+             scrollX = !!(event.wheelDeltaX || event.axis === 1);
+  
+        if (event.wheelDelta)
+             delta = event.wheelDelta / 120;
+         else if (event.detail)
+             delta = -event.detail / 2;
+             
+        direction = (delta > 0) ? "left" : "right";
+         delta = Math.min(Math.abs(delta), 4); // max = 4
+         
+        if ($(event.target).parents("#subnav")[0]) {
+             sbController.move((direction == "left") ? "up" : "down");
+             event.stopPropagation();
+             return;
+         } else if ($(event.target).parents("#action-box")[0]) {
+             if (actionbox.obj && actionbox.obj.stop)
+                 actionbox.obj.stop();
+ 			if (direction == "left")
+                 actionbox.moveToLeft();
+             else
+                 actionbox.moveToRight();
+             event.stopPropagation();
+             return;
+         } else if (stop && !scrollX) { // On autorise la scroll si on est tout en bas ou tout en haut (en fonction de la direction
+             //fix le css et le decalage (provoqué par le margin-top du premier element :first-child)
+             var __cssfix = $c2.css("overflow"),
+                 dir = direction[0];
+             $c2.css("overflow", "hidden");
+  
+        	rule2 = (dir === "r" && $c2.position().top + $c2.height() <= $c1.height()); // droite et tout en bas
+         	rule2 = (dir === "l" && $c2.position().top >= 0) || rule2; // gauche et tout en haut
+  
+            $c2.css("overflow", __cssfix);
+             
+            if (rule2) { // "Blocage" forcer à faire un scroll supplementaire pour débloquer le focus
+             	var last = $(this).data("__lastelwheel"), bool = false;
+                 last = (last) ? last : {mover: null, dir: dir, deblocage: false };
+                 bool = $mover.is(last.mover) && dir === last.dir;  // Si l'élément est le précédent on scroll (= désactivation du blocage)
+             	rule2 = (bool && last.deblocage === true);
+                 if (last.deblocage === false)
+                     last.deblocage = setTimeout(function () {
+                         $("body").data("__lastelwheel", {mover: $mover, dir: dir, deblocage: true})
+                         console.info("deblocage");
+                     }, 200); // blocage de 0.2 sec
+                 (!bool && clearTimeout(last.deblocage));
+                 $(this).data("__lastelwheel", {mover: $mover, dir: dir, deblocage: (bool) ? last.deblocage : false});
+             } else {
+                 $(this).data("__lastelwheel", null);
+             }
+             
+            if (!rule2)
+                 return;
+             else
+                 $(this).data("__lastiswheel", false);
+         }
+        	
+        panelController.move(delta / 4, direction);
+     	$(this).data("__lastiswheel", true).data("__wheelstartpos", $(this).data("__mousepos"));
+         
+        event.stopPropagation();
+     });
+}
+
+//############################################
+
 
 //################## LOADER ##################
 var path = window.location.pathname;
@@ -596,6 +697,15 @@ $(function(){
 		loadRemainingTimes();
 	}
 
+	use = aoConfig.getValue("useHorizontalScroll");
+	if(use != undefined)
+	{
+		if(use)
+		{
+			loadHorizontalScroll();
+		}
+	}
+	
 	//configPanel
 	if(path.slice(1).substring(path.slice(1).indexOf('/'), path.length) == "/params")
 	{
