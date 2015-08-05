@@ -4,7 +4,7 @@
 // @description Userscript dédié à l'amélioration de l'UI d'Asylamba
 // @include     http://game.asylamba.com/*
 // @updateURL    https://github.com/Genroa/asylambasoracle/raw/master/Asylambas_Oracle.user.js
-// @version     1.3
+// @version     1.4
 // @grant       Genroa & Alceste
 // @author      Genroa & Alceste
 // ==/UserScript==
@@ -73,6 +73,8 @@ var mapPicsOfFactions = [0, 1, 4, 8, 9];
 var optionToggleBestMerchWays_pic = "http://img11.hostingpics.net/pics/170120merchways.png";
 var bestMerchWays_pic = "http://img15.hostingpics.net/pics/203023merchWay.png";
 var bestOtherFactionsMerchWays_pic = "http://img15.hostingpics.net/pics/615926merchWayOtherFaction.png";
+var merchWayMinDistance_pic = "http://img11.hostingpics.net/pics/506805merchwaysmin.png";
+var merchWayMaxDistance_pic = "http://img11.hostingpics.net/pics/373043merchwaysmax.png";
 
 
 
@@ -180,11 +182,17 @@ OraclesMap.prototype.displayUI = function(){
 		
 		var active = "";
 		if(this.displayFilter){
-			active = " active"
+			active = " active";
 		}
 		
-		$('a.switch-class:nth-child(1)').before('<a id="optionToggleBestMerchWays" class="sh hb lb'+active+'" href="#" title="afficher/cacher les meilleures destinations commerciales" ><img src="'+optionToggleBestMerchWays_pic+'" alt="minimap"></a>');		
+		$('a.switch-class:nth-child(1)').before('<a id="optionToggleBestMerchWays" class="sh hb lb switch-class'+active+'" href="#" title="afficher/cacher les meilleures destinations commerciales" ><img src="'+optionToggleBestMerchWays_pic+'" alt="minimap"></a>');		
 		document.getElementById('optionToggleBestMerchWays').addEventListener('click', toggleDisplay, false);
+
+		$('#optionToggleBestMerchWays').before('<a id="optionMerchWayMaxDistance" class="sh hb lb'+active+'" href="#" title="choisir la borne supérieure de l\'intervalle des meilleures destinations commerciales"><img src="'+merchWayMaxDistance_pic+'" alt="minimap"></a>');		
+		document.getElementById('optionMerchWayMaxDistance').addEventListener('click', chooseMerchWayMaxDistance, false);
+
+		$('#optionMerchWayMaxDistance').before('<a id="optionMerchWayMinDistance" class="sh hb lb'+active+'" href="#" title="choisir la borne inférieure de l\'intervalle des meilleures destinations commerciales"><img src="'+merchWayMinDistance_pic+'" alt="minimap"></a>');		
+		document.getElementById('optionMerchWayMinDistance').addEventListener('click', chooseMerchWayMinDistance, false);
 		
 		//$('a.switch-class:nth-child(1)').before('<a class="sh hb lb" href="#" title="filtre factions"><img src="http://game.asylamba.com/s7/public/media/map/option/minimap.png" alt="minimap"></a>');
 		
@@ -205,7 +213,7 @@ OraclesMap.prototype.displayUI = function(){
 					iconsList += '<img class="oraclesMap oraclesMapBestMerchWay" style="display: none; margin-top: -20px;" src="'+bestOtherFactionsMerchWays_pic+'" />';
 				}
 			}
-							
+			
 			//+ '<img> '
 			iconsList += '</span>';
 
@@ -234,6 +242,28 @@ function toggleDisplay(){
 	else
 	{
 		$("#optionToggleBestMerchWays").removeClass("active");
+	}
+}
+
+function chooseMerchWayMinDistance()
+{
+	var newVal = prompt("Définissez la borne inférieure", oraclesMap.merchWayMinDistance);
+	if(newVal != null)
+	{
+		oraclesMap.merchWayMinDistance = newVal;
+		oraclesMap.saveConfig();
+		oraclesMap.refresh();
+	}
+}
+
+function chooseMerchWayMaxDistance()
+{
+	var newVal = prompt("Définissez la borne supérieure", oraclesMap.merchWayMaxDistance);
+	if(newVal != null)
+	{
+		oraclesMap.merchWayMaxDistance = newVal;
+		oraclesMap.saveConfig();
+		oraclesMap.refresh();
 	}
 }
 
