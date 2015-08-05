@@ -4,7 +4,7 @@
 // @description Userscript dédié à l'amélioration de l'UI d'Asylamba
 // @include     http://game.asylamba.com/*
 // @updateURL    https://github.com/Genroa/asylambasoracle/raw/master/Asylambas_Oracle.user.js
-// @version     1.5
+// @version     1.6
 // @grant       Genroa & Alceste
 // @author      Genroa & Alceste
 // @require		http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js
@@ -651,11 +651,16 @@ function loadHorizontalScroll()
 	             else
 	                 $(this).data("__lastiswheel", false);
 	         }
-	        	
-	        panelController.move(delta / 4, direction);
-	     	$(this).data("__lastiswheel", true).data("__wheelstartpos", $(this).data("__mousepos"));
+	        
+	        if(typeof panelController !== 'undefined')
+	        {
+	        	panelController.move(delta / 4, direction);
+	     		$(this).data("__lastiswheel", true).data("__wheelstartpos", $(this).data("__mousepos"));
+	     		event.stopPropagation();
+	        }
+	        
 	         
-	        event.stopPropagation();
+	        
 	     });
 	})(window, window.$);
 }
