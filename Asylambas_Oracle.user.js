@@ -531,7 +531,7 @@ function addConfigPanel()
 							config+='<a href="#" class="on-off-button AO-config '+(aoConfig.getValue("useOraclesMap") ? "" : "disabled")+'" config-attribute="useOraclesMap">Utiliser Oracle\'s Map</a>';
 							config+='<a href="#" class="on-off-button AO-config '+(aoConfig.getValue("useRemainingTimes") ? "" : "disabled")+'" config-attribute="useRemainingTimes">Utiliser RemainingTimes</a>';
 							config+='<a href="#" class="on-off-button AO-config '+(aoConfig.getValue("useQuickMenus") ? "" : "disabled")+'" config-attribute="useQuickMenus">Utiliser QuickMenus</a>';
-							config+='<a href="#" class="on-off-button AO-config '+(aoConfig.getValue("useHorizontalScroll") ? "" : "disabled")+'" config-attribute="useHorizontalScroll">Activer le scrolling horizontal (chrome only pour l\'instant)</a>';
+							config+='<a href="#" class="on-off-button AO-config '+(aoConfig.getValue("useHorizontalScroll") ? "" : "disabled")+'" config-attribute="useHorizontalScroll">Activer le scrolling horizontal</a>';
 
 							
 							
