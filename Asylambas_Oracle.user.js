@@ -3,8 +3,10 @@
 // @namespace   asylamba
 // @description Userscript dédié à l'amélioration de l'UI d'Asylamba
 // @include     http://game.asylamba.com/*
-// @updateURL    https://github.com/Genroa/asylambasoracle/raw/master/Asylambas_Oracle.user.js
-// @version     1.6
+// @match       http://game.asylamba.com/*
+// @grant       GM_xmlhttpRequest
+// @updateURL   https://github.com/Genroa/asylambasoracle/raw/master/Asylambas_Oracle.user.js
+// @version     1.6.1
 // @grant       Genroa & Alceste
 // @author      Genroa & Alceste
 // @require		http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js
@@ -41,7 +43,14 @@ function getPosition(str, m, i) {
    return str.split(m, i).join(m).length;
 }
 
-
+function addCss(newCss)
+{
+	if(!$('#custom-css').length)
+	{
+		$("head").append('<style id="custom-css" type="text/css"></style>');
+	}
+	$('#custom-css').append(newCss);
+}
 
 
 /*
@@ -176,14 +185,22 @@ OraclesMap.prototype.displayUI = function(){
 			active = " active";
 		}
 		
-		$('a.switch-class:nth-child(1)').before('<a id="optionToggleBestMerchWays" class="sh hb lb switch-class'+active+'" href="#" title="afficher/cacher les meilleures destinations commerciales" ><img src="'+optionToggleBestMerchWays_pic+'" alt="minimap"></a>');		
-		document.getElementById('optionToggleBestMerchWays').addEventListener('click', toggleDisplay, false);
+		//Custom CSS
+		addCss("#map-option{ max-width: 186px; background-repeat: initial; height:70px; }");
+		addCss("#map-option::before{ height: 76px; }");
+		addCss("#map-option::after{ height: 76px; }");
+		addCss("#map-option a{ margin-top: 2px; }");
+		addCss("#map-content{ top: 135px; }");
 
-		$('#optionToggleBestMerchWays').before('<a id="optionMerchWayMaxDistance" class="sh hb lb'+active+'" href="#" title="choisir la borne supérieure de l\'intervalle des meilleures destinations commerciales"><img src="'+merchWayMaxDistance_pic+'" alt="minimap"></a>');		
+		//Options
+		$('#map-option > a.sh.hb.lb.moveTo.switch-class').after('<a id="optionMerchWayMinDistance" class="sh hb lb'+active+'" href="#" title="choisir la borne inférieure de l\'intervalle des meilleures destinations commerciales"><img src="'+merchWayMinDistance_pic+'" alt="minimap"></a>');		
+		document.getElementById('optionMerchWayMinDistance').addEventListener('click', chooseMerchWayMinDistance, false);
+
+		$('#optionMerchWayMinDistance').after('<a id="optionMerchWayMaxDistance" class="sh hb lb'+active+'" href="#" title="choisir la borne supérieure de l\'intervalle des meilleures destinations commerciales"><img src="'+merchWayMaxDistance_pic+'" alt="minimap"></a>');		
 		document.getElementById('optionMerchWayMaxDistance').addEventListener('click', chooseMerchWayMaxDistance, false);
 
-		$('#optionMerchWayMaxDistance').before('<a id="optionMerchWayMinDistance" class="sh hb lb'+active+'" href="#" title="choisir la borne inférieure de l\'intervalle des meilleures destinations commerciales"><img src="'+merchWayMinDistance_pic+'" alt="minimap"></a>');		
-		document.getElementById('optionMerchWayMinDistance').addEventListener('click', chooseMerchWayMinDistance, false);
+		$('#optionMerchWayMaxDistance').after('<a id="optionToggleBestMerchWays" class="sh hb lb switch-class'+active+'" href="#" title="afficher/cacher les meilleures destinations commerciales" ><img src="'+optionToggleBestMerchWays_pic+'" alt="minimap"></a>');		
+		document.getElementById('optionToggleBestMerchWays').addEventListener('click', toggleDisplay, false);
 		
 		//$('a.switch-class:nth-child(1)').before('<a class="sh hb lb" href="#" title="filtre factions"><img src="http://game.asylamba.com/s7/public/media/map/option/minimap.png" alt="minimap"></a>');
 		
@@ -278,6 +295,7 @@ function loadOraclesMap(){
 
 
 //########### REMAINING TIME #################
+
 var currentRessources = 0; // ressources currently in warehouse
 var production        = 0; // current ressources production
 
@@ -364,8 +382,6 @@ function loadRemainingTimes()
         remainingTechnosphereTime()
     }
 }
-
-
 
 //############################################
 
@@ -464,7 +480,6 @@ function addAdmiralyMenu(basePath)
 	$('.square[title=amirauté]').removeClass("hb");
 }
 
-
 //############################################
 
 
@@ -515,9 +530,6 @@ var aoConfig = new AOConfig();
 
 //############################################
 
-
-
-
 function addConfigPanel()
 {
 	var config = '<div class="component hasMover">'
@@ -560,6 +572,7 @@ function addConfigPanel()
 		}
 	});
 }
+
 //############################################
 
 
@@ -743,6 +756,11 @@ $(function(){
 		addConfigPanel();
 	}
 	
+	addCss(".red{background: red;}");
+
+	addCss(".blue{background: blue;}");
+
+	addCss(".green{background: green;}");
 });
 
 
