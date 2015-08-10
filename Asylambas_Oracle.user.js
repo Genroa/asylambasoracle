@@ -6,7 +6,7 @@
 // @match       http://game.asylamba.com/*
 // @grant       GM_xmlhttpRequest
 // @updateURL   https://github.com/Genroa/asylambasoracle/raw/master/Asylambas_Oracle.user.js
-// @version     1.6.1
+// @version     1.6.2
 // @grant       Genroa & Alceste
 // @author      Genroa & Alceste
 // @require		http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js
@@ -409,12 +409,14 @@ function addMoneyMenu(basePath)
 	
 	$('.square[title=finances]').mouseenter(function(){
 		clearTimeout($(this).data('timeoutId'));
+		$('#moneyMenu').stop(true);
 		$('#moneyMenu').fadeIn();
 	});
 	$('#moneyMenu, .square[title=finances]').mouseleave(function(){
 		var elem = $('#moneyMenu');
 
 		timeoutId = setTimeout(function(){
+			elem.stop(true);
             elem.fadeOut();
         }, 800);
         $('.square[title=finances]').data('timeoutId', timeoutId);
@@ -437,12 +439,14 @@ function addLeagueMenu(basePath)
 	
 	$('.square[title=faction]').mouseenter(function(){
 		clearTimeout($(this).data('timeoutId'));
+		$('#leagueMenu').stop(true);
 		$('#leagueMenu').fadeIn();
 	});
 	$('#leagueMenu, .square[title=faction]').mouseleave(function(){
 		var elem = $('#leagueMenu');
 
 		timeoutId = setTimeout(function(){
+			elem.stop(true);
             elem.fadeOut();
         }, 800);
         $('.square[title=faction]').data('timeoutId', timeoutId);
@@ -466,12 +470,14 @@ function addAdmiralyMenu(basePath)
 	
 	$('.square[title=amirauté]').mouseenter(function(){
 		clearTimeout($(this).data('timeoutId'));
+		$('#admiraltyMenu').stop(true);
 		$('#admiraltyMenu').fadeIn();
 	});
 	$('#admiraltyMenu, .square[title=amirauté]').mouseleave(function(){
 		var elem = $('#admiraltyMenu');
 
 		timeoutId = setTimeout(function(){
+            elem.stop(true);
             elem.fadeOut();
         }, 800);
         $('.square[title=amirauté]').data('timeoutId', timeoutId);
