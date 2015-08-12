@@ -6,9 +6,8 @@
 // @match       http://game.asylamba.com/*
 // @grant       GM_xmlhttpRequest
 // @updateURL   https://github.com/Genroa/asylambasoracle/raw/master/Asylambas_Oracle.user.js
-// @version     1.6.2
-// @grant       Genroa & Alceste
-// @author      Genroa & Alceste
+// @version     1.7.0
+// @author      Genroa & Naji
 // @require		http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js
 // ==/UserScript==
 
@@ -310,10 +309,20 @@ function pad(n, width, z)
 // Format time based on remaining tick
 function beautifulTime(remainingTick, d) 
 {
-    return ((remainingTick-1) > 0 ? (remainingTick-1) + 'h' : '') 
-        + pad((d.getMinutes() === 0 ? 0 : 60 - d.getMinutes()), 2) 
-        + 'm'
-    ;
+    var time = "", padding = 1;
+    if (remainingTick > 24) {
+        time += (Math.floor(remainingTick / 24)) + 'j ';
+        remainingTick = remainingTick - (Math.floor(remainingTick / 24) * 24);
+        padding = 2;
+    }
+    if ((remainingTick-1) > 0) {
+        time += pad(remainingTick-1, padding) + 'h';
+    }
+    if (d.getMinutes() !== 0) {
+        time += ' ' + pad(60 - d.getMinutes(), 2) + 'm';
+    }
+    
+    return time;
 }
 
 // Display the remaining time before the warehouse is full
@@ -687,12 +696,58 @@ function loadHorizontalScroll()
 //############################################
 
 
+//########## TradeRoadProfitability ##########
+
+function initActionBoxObserver()
+{
+	var target = document.querySelector('#action-box');
+
+	// create an observer instance
+	var observer = new MutationObserver(function(mutations) {
+        injectTradeRoadProfitability();
+	});
+
+	// configuration of the observer:
+	var config = { attributes: false, childList: true, characterData: false };
+
+	// pass in the target node, as well as the observer options
+	observer.observe(target, config);
+	
+	// if the action box is already opened at startup
+	if ( $('#action-box').children().length > 0 ) {
+		injectTradeRoadProfitability();
+	}
+}
+
+function injectTradeRoadProfitability() 
+{
+    console.log("action box opened");
+    
+    var date = new Date();
+    date.setMinutes(0);
+    
+	$('div#action-box li.action div.content div.box[data-id="4"] div.rc').each(function() {
+		var income = parseInt($(this).children('span.label-box:eq(0)').children('span.val').text().replace(/ /g, ""));
+		var cost   = parseInt($(this).children('span.label-box:eq(1)').children('span.val').text().replace(/ /g, ""));
+		
+		var ticks  = Math.ceil(cost / income);
+		var time   = beautifulTime(ticks, date);
+        
+        console.log(ticks, time);
+        
+        $(this).css('margin', '0px');
+        $(this).children('span.label-box:eq(1)').after('<span>Rentabilisée en ' + ticks + 'r (' + time + ')</span>');
+	});
+}
+
+//############################################
+
 //################## LOADER ##################
 
 $(function(){
 	var path = window.location.pathname;
 
-	//GM_log("Loading Asylamba's Oracle...");
+	// console.log("Loading Asylamba's Oracle...");
 
 	//load AO config
 	aoConfig.loadConfig();
@@ -713,10 +768,12 @@ $(function(){
 	}
 	
 
-	//Oracle's Map
-
-	if(path.slice(1).substring(path.slice(1).indexOf('/'), path.length) == "/map")
+	//Oracle's Map & TradeRoadProfitability
+	if(path.indexOf("/map") > -1)
 	{
+        // TradeRoadProfitability
+        initActionBoxObserver();
+        // Oracle's Map
 		use = aoConfig.getValue("useOraclesMap");
 		if(use != undefined)
 		{
