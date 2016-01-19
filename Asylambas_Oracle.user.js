@@ -6,7 +6,7 @@
 // @match       http://game.asylamba.com/*
 // @grant       GM_xmlhttpRequest
 // @updateURL   https://github.com/Genroa/asylambasoracle/raw/master/Asylambas_Oracle.user.js
-// @version     1.7.0
+// @version     1.7.1
 // @author      Genroa & Naji
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js
 // ==/UserScript==
@@ -319,7 +319,7 @@ function beautifulTime(remainingTick, d)
 		time += pad(remainingTick-1, padding) + 'h';
 	}
 	if (d.getMinutes() !== 0) {
-		time += ' ' + pad(60 - d.getMinutes(), 2) + 'm';
+		time += pad(60 - d.getMinutes(), 2) + 'm';
 	}
 	
 	return time;
@@ -376,7 +376,10 @@ function remainingTechnosphereTime()
 function loadRemainingTimes()
 {
 	production = $("#tools-refinery > div.overflow > div.number-box:first-child span.value").text().replace(/ /g, "").split("+");
-	production = parseInt(production[0]) + parseInt(production[1]);
+	if (production.length > 1)
+		production = parseInt(production[0]) + parseInt(production[1]);
+	else
+		production = parseInt(production[0]);
 
 	// Display the remaining time before the warehouse is full
 	remainingWarehouseTime();
@@ -388,7 +391,7 @@ function loadRemainingTimes()
 	
 	// Display the remaining time before being able to research a technology
 	if (location.href.indexOf('bases/view-technosphere') > -1) {
-		remainingTechnosphereTime()
+		remainingTechnosphereTime();
 	}
 }
 
