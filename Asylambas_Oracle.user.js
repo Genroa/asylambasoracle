@@ -2,8 +2,8 @@
 // @name        Asylamba's Oracle
 // @namespace   asylamba
 // @description Userscript dédié à l'amélioration de l'UI d'Asylamba
-// @include     http://game.asylamba.com/*
-// @match       http://game.asylamba.com/*
+// @include     http://*.asylamba.com/map
+// @match       http://*.asylamba.com/map
 // @grant       GM_xmlhttpRequest
 // @updateURL   https://github.com/Genroa/asylambasoracle/raw/master/Asylambas_Oracle.user.js
 // @version     1.7.1
